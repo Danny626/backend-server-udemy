@@ -1,9 +1,20 @@
 // Requires  //es una import de lib de terceros o personalizadas
 var express = require('express');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 // inicializar variables
 var app = express();
+
+// body parser
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// importar rutas
+var appRoutes = require('./routes/app');
+var usuarioRoutes = require('./routes/usuario');
+var loginRoutes = require('./routes/login');
 
 // conexión a la bd
 mongoose.connection
@@ -15,14 +26,11 @@ mongoose.connection
         console.error(err);
     });
 
-// rutas
-// req: request, res: response(respuesta a la solicitud), next: cuando se ejecute continue con la sgte extensión con middleware
-app.get('/', (req, res, next) => {
-    res.status(200).json({
-        ok: true,
-        mensaje: 'petición realizada correctamente'
-    });
-});
+// Rutas
+// declaramos un middleware, que es algo que se ejecuta antes de que se resuelvan otras rutas
+app.use('/usuario', usuarioRoutes);
+app.use('/login', loginRoutes);
+app.use('/', appRoutes);
 
 // escuchar peticiones
 app.listen(3000, () => {
