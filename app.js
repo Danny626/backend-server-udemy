@@ -15,6 +15,11 @@ app.use(bodyParser.json());
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
+var hospitalRoutes = require('./routes/hospital');
+var medicoRoutes = require('./routes/medico');
+var busquedaRoutes = require('./routes/busqueda');
+var uploadRoutes = require('./routes/upload');
+var imagenesRoutes = require('./routes/imagenes');
 
 // conexión a la bd
 mongoose.connection
@@ -26,10 +31,20 @@ mongoose.connection
         console.error(err);
     });
 
+// Server index config
+var serveIndex = require('serve-index');
+app.use(express.static(__dirname + '/'));
+app.use('/uploads', serveIndex(__dirname + '/uploads'));
+
 // Rutas
 // declaramos un middleware, que es algo que se ejecuta antes de que se resuelvan otras rutas
 app.use('/usuario', usuarioRoutes);
 app.use('/login', loginRoutes);
+app.use('/hospital', hospitalRoutes);
+app.use('/medico', medicoRoutes);
+app.use('/busqueda', busquedaRoutes);
+app.use('/upload', uploadRoutes);
+app.use('/img', imagenesRoutes);
 app.use('/', appRoutes);
 
 // escuchar peticiones
